@@ -1,75 +1,36 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Container } from "semantic-ui-react";
 import NavBar from "./NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
-import LoadingComponent from "./LoadingComponent";
-import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
+import { Route, useLocation } from "react-router";
+import HomePage from "../../features/home/HomePage";
+import ActivityForm from "../../features/activities/dashboard/form/ActivityForm";
+import ActivityDetails from "../../features/details/ActivityDetails";
 
 function App() {
-  const { activityStore } = useStore();
-
-  useEffect(() => {
-    activityStore.loadActivities();
-  }, [activityStore]);
-
-  // const handleSelectActivity = (id: string) => {
-  //   setSelectedActivity(activities.find((x) => x.id === id));
-  // };
-
-  // const handleCancelSelectedActivity = () => {
-  //   setSelectedActivity(undefined);
-  // };
-
-  // const handleFormOpen = (id?: string) => {
-  //   id ? handleSelectActivity(id) : handleCancelSelectedActivity();
-  //   setEditMode(true);
-  // };
-
-  // const handleFormClose = () => {
-  //   setEditMode(false);
-  // };
-
-  // const handleCreateOrEditActivity = (activity: Activity) => {
-  //   setSubmitting(true);
-  //   if (activity.id) {
-  //     agent.Activities.update(activity).then(() => {
-  //       setActivities([
-  //         ...activities.filter((x) => x.id !== activity.id),
-  //         activity,
-  //       ]);
-  //       setSelectedActivity(activity);
-  //       setEditMode(false);
-  //       setSubmitting(false);
-  //     });
-  //   } else {
-  //     activity.id = uuid();
-  //     agent.Activities.create(activity).then(() => {
-  //       setActivities([...activities, activity]);
-  //       setSelectedActivity(activity);
-  //       setEditMode(false);
-  //       setSubmitting(false);
-  //     });
-  //   }
-  // };
-
-  // const handleDeleteActivity = (id: string) => {
-  //   setSubmitting(true);
-  //   agent.Activities.delete(id).then(() => {
-  //     setActivities([...activities.filter((x) => x.id !== id)]);
-  //     setSubmitting(false);
-  //   });
-  // };
-
-  if (activityStore.loadingInitial)
-    return <LoadingComponent content={"Loading Activities..."} />;
-
+  const location = useLocation();
   return (
     <>
-      <NavBar />
-      <Container style={{ marginTop: "7em" }}>
-        <ActivityDashboard />
-      </Container>
+      <Route path="/" exact component={HomePage} />
+
+      <Route
+        path={"/(.+)"}
+        render={() => (
+          <>
+            <NavBar />
+            <Container style={{ marginTop: "7em" }}>
+              <Route path="/Activities" exact component={ActivityDashboard} />
+              <Route path="/Activities/:id" component={ActivityDetails} />
+              <Route
+                key={location.key}
+                path={["/CreateActivities", "/manage/:id"]}
+                component={ActivityForm}
+              />
+            </Container>
+          </>
+        )}
+      />
     </>
   );
 }
