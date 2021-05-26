@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Header, Segment } from "semantic-ui-react";
 import axios from "axios";
 import ValidationErrors from "./ValidationErrors";
-import { error } from "node:console";
 
 const TestErrors = () => {
   const baseUrl = "http://localhost:5000/api/";
